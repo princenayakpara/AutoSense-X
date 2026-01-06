@@ -1,0 +1,29 @@
+name: autosense_x
+description: AutoSense X Mobile Companion App
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  shared_preferences: ^2.2.2
+  flutter_charts: ^0.12.0
+  fl_chart: ^0.65.0
+  provider: ^6.1.1
+  google_sign_in: ^6.1.4
+  jwt_decoder: ^2.0.1
+  connectivity_plus: ^5.0.2
+  cached_network_image: ^3.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+

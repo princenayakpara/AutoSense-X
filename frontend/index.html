@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoSense X - Ultimate AI System Guardian</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/jpeg" href="static/logo.jpg">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <!-- Loading Screen -->
+        <div id="loadingScreen" class="loading-screen">
+            <div class="loading-content">
+                <img src="static/logo.jpg" alt="Logo"
+                    style="width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--neon-cyan); box-shadow: 0 0 20px var(--neon-cyan); margin-bottom: 1.5rem;">
+                <h1>AutoSense X</h1>
+                <div class="loading-spinner"></div>
+                <p>Initializing System Guardian...</p>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-brand">
+                    <img src="static/logo.jpg" alt="Logo"
+                        style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--neon-cyan); margin-right: 10px;">
+                    <span class="logo-text">AutoSense X</span>
+                    <span class="status-indicator" id="serverStatus"></span>
+                </div>
+                <div class="nav-menu" id="navMenu">
+                    <a href="#dashboard" class="nav-link active" data-section="dashboard">
+                        <span class="nav-icon">📊</span>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#ai-brain" class="nav-link" data-section="ai-brain">
+                        <span class="nav-icon">🧠</span>
+                        <span>AI Brain</span>
+                    </a>
+                    <a href="#disk-map" class="nav-link" data-section="disk-map">
+                        <span class="nav-icon">🌲</span>
+                        <span>Disk Map</span>
+                    </a>
+                    <a href="#apps" class="nav-link" data-section="apps">
+                        <span class="nav-icon">📦</span>
+                        <span>Apps</span>
+                    </a>
+                    <a href="#security" class="nav-link" data-section="security">
+                        <span class="nav-icon">🛡️</span>
+                        <span>Security</span>
+                    </a>
+                    <a href="#settings" class="nav-link" data-section="settings">
+                        <span class="nav-icon">⚙️</span>
+                        <span>Settings</span>
+                    </a>
+                </div>
+                <div class="nav-auth">
+                    <div class="user-info" id="userInfo" style="display: none;">
+                        <span id="usernameDisplay"></span>
+                    </div>
+                    <button id="loginBtn" class="btn-glass">Login</button>
+                    <button id="logoutBtn" class="btn-glass" style="display: none;">Logout</button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Toast Notifications Container -->
+        <div id="toastContainer" class="toast-container"></div>
+
+        <!-- Login Modal -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content glass-card modal-animate">
+                <span class="close">&times;</span>
+                <div class="modal-header">
+                    <img src="static/logo.jpg" alt="Logo"
+                        style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); margin-bottom: 1rem;">
+                    <h2>Welcome to AutoSense X</h2>
+                    <p>Ultimate AI System Guardian</p>
+                </div>
+                <form id="loginForm">
+                    <div class="input-group">
+                        <label>Username</label>
+                        <input type="text" id="username" placeholder="Enter your username" class="input-glass" required>
+                    </div>
+                    <div class="input-group">
+                        <label>Password</label>
+                        <input type="password" id="password" placeholder="Enter your password" class="input-glass"
+                            required>
+                    </div>
+                    <button type="submit" class="btn-neon btn-full">
+                        <span>Login</span>
+                        <span class="btn-loader" style="display: none;"></span>
+                    </button>
+                </form>
+                <div class="modal-divider">
+                    <span>Or</span>
+                </div>
+                <button id="googleLoginBtn" class="btn-glass btn-full">
+                    <span>🔐</span>
+                    <span>Sign in with Google</span>
+                </button>
+                <div class="modal-footer">
+                    <p>Don't have an account? <a href="#" id="registerLink">Register</a></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section active">
+                <div class="section-header">
+                    <h1 class="section-title">
+                        <span class="title-icon">📊</span>
+                        System Dashboard
+                    </h1>
+                    <div class="section-actions">
+                        <button class="btn-icon" id="refreshDashboard" title="Refresh">
+                            <span>🔄</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- System Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card glass-card stat-card-cpu">
+                        <div class="stat-header">
+                            <div class="stat-icon">💻</div>
+                            <div class="stat-trend" id="cpuTrend"></div>
+                        </div>
+                        <div class="stat-info">
+                            <h3>CPU Usage</h3>
+                            <div class="stat-value" id="cpuPercent">0%</div>
+                            <div class="stat-subtitle" id="cpuCores">0 Cores</div>
+                        </div>
+                        <div class="stat-chart">
+                            <canvas id="cpuChart"></canvas>
+                        </div>
+                        <div class="stat-footer">
+                            <span class="stat-label">Current Load</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card stat-card-memory">
+                        <div class="stat-header">
+                            <div class="stat-icon">🧠</div>
+                            <div class="stat-trend" id="memoryTrend"></div>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Memory Usage</h3>
+                            <div class="stat-value" id="memoryPercent">0%</div>
+                            <div class="stat-subtitle" id="memoryDetails">0 GB / 0 GB</div>
+                        </div>
+                        <div class="stat-chart">
+                            <canvas id="memoryChart"></canvas>
+                        </div>
+                        <div class="stat-footer">
+                            <span class="stat-label">RAM Status</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card stat-card-disk">
+                        <div class="stat-header">
+                            <div class="stat-icon">💾</div>
+                            <div class="stat-trend" id="diskTrend"></div>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Disk Usage</h3>
+                            <div class="stat-value" id="diskPercent">0%</div>
+                            <div class="stat-subtitle" id="diskDetails">0 GB Free</div>
+                        </div>
+                        <div class="stat-chart">
+                            <canvas id="diskChart"></canvas>
+                        </div>
+                        <div class="stat-footer">
+                            <span class="stat-label">Storage Status</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card glass-card stat-card-processes">
+                        <div class="stat-header">
+                            <div class="stat-icon">⚡</div>
+                        </div>
+                        <div class="stat-info">
+                            <h3>Processes</h3>
+                            <div class="stat-value" id="processCount">0</div>
+                            <div class="stat-subtitle">Running</div>
+                        </div>
+                        <div class="stat-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="processProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                        <div class="stat-footer">
+                            <span class="stat-label">Active Processes</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="section-subtitle">
+                    <h2>Quick Actions</h2>
+                    <p>Optimize your system with one click</p>
+                </div>
+                <div class="actions-grid">
+                    <button class="action-btn glass-card action-hover" id="boostRamBtn">
+                        <div class="action-icon-wrapper">
+                            <span class="action-icon">🚀</span>
+                        </div>
+                        <div class="action-content">
+                            <h3>Boost RAM</h3>
+                            <p>Free up memory instantly</p>
+                        </div>
+                        <div class="action-arrow">→</div>
+                    </button>
+                    <button class="action-btn glass-card action-hover" id="cleanJunkBtn">
+                        <div class="action-icon-wrapper">
+                            <span class="action-icon">🧹</span>
+                        </div>
+                        <div class="action-content">
+                            <h3>Clean Junk</h3>
+                            <p>Remove temporary files</p>
+                        </div>
+                        <div class="action-arrow">→</div>
+                    </button>
+                    <button class="action-btn glass-card action-hover" id="optimizeBtn">
+                        <div class="action-icon-wrapper">
+                            <span class="action-icon">✨</span>
+                        </div>
+                        <div class="action-content">
+                            <h3>Auto Optimize</h3>
+                            <p>AI-powered optimization</p>
+                        </div>
+                        <div class="action-arrow">→</div>
+                    </button>
+                    <button class="action-btn glass-card action-hover" id="scanSecurityBtn">
+                        <div class="action-icon-wrapper">
+                            <span class="action-icon">🛡️</span>
+                        </div>
+                        <div class="action-content">
+                            <h3>Security Scan</h3>
+                            <p>Check system security</p>
+                        </div>
+                        <div class="action-arrow">→</div>
+                    </button>
+                </div>
+
+                <!-- Alerts -->
+                <div class="section-subtitle">
+                    <h2>System Alerts</h2>
+                    <p>Real-time system notifications</p>
+                </div>
+                <div class="alerts-section glass-card">
+                    <div id="alertsList" class="alerts-list">
+                        <div class="alert-placeholder">
+                            <span>🔔</span>
+                            <p>No alerts at this time</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Brain Section -->
+            <section id="ai-brain" class="section">
+                <div class="section-header">
+                    <h1 class="section-title">
+                        <span class="title-icon">🧠</span>
+                        AI System Brain
+                    </h1>
+                </div>
+
+                <div class="ai-dashboard">
+                    <div class="ai-prediction glass-card ai-card-main">
+                        <div class="ai-card-header">
+                            <h2>System Health Prediction</h2>
+                            <div class="ai-badge" id="aiBadge">AI</div>
+                        </div>
+                        <div class="risk-meter">
+                            <div class="risk-circle" id="riskCircle">
+                                <svg class="risk-svg" viewBox="0 0 200 200">
+                                    <circle class="risk-bg" cx="100" cy="100" r="90"></circle>
+                                    <circle class="risk-progress" id="riskProgress" cx="100" cy="100" r="90"></circle>
+                                </svg>
+                                <div class="risk-content">
+                                    <div class="risk-value" id="riskValue">0%</div>
+                                    <div class="risk-level" id="riskLevel">Unknown</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="risk-explanation" id="riskExplanation">
+                            <p>Click "Get Prediction" to analyze your system health</p>
+                        </div>
+                        <button class="btn-neon btn-full" id="predictBtn">
+                            <span>🔮 Get AI Prediction</span>
+                        </button>
+                    </div>
+
+                    <div class="ai-recommendations glass-card ai-card-side">
+                        <div class="ai-card-header">
+                            <h2>AI Recommendations</h2>
+                            <span class="recommendations-count" id="recCount">0</span>
+                        </div>
+                        <div class="recommendations-list" id="recommendationsList">
+                            <div class="recommendation-placeholder">
+                                <span>💡</span>
+                                <p>Get predictions to see recommendations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-actions">
+                    <button class="btn-neon btn-large" id="autoOptimizeBtn">
+                        <span>⚡</span>
+                        <span>Auto Optimize System</span>
+                    </button>
+                    <button class="btn-neon btn-large" id="generateReportBtn">
+                        <span>📄</span>
+                        <span>Generate PDF Report</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- Disk Map Section -->
+            <section id="disk-map" class="section">
+                <div class="section-header">
+                    <h1 class="section-title">
+                        <span class="title-icon">🌲</span>
+                        Disk Map Explorer
+                    </h1>
+                </div>
+
+                <div class="disk-controls glass-card">
+                    <div class="control-group">
+                        <label>Select Drive</label>
+                        <select id="driveSelect" class="input-glass">
+                            <option value="C:">C: Drive</option>
+                            <option value="D:">D: Drive</option>
+                            <option value="E:">E: Drive</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label>Max Depth</label>
+                        <input type="range" id="depthSlider" min="2" max="6" value="4" class="slider">
+                        <span id="depthValue">4</span>
+                    </div>
+                    <button class="btn-neon" id="loadDiskMapBtn">
+                        <span>🌲</span>
+                        <span>Load Disk Map</span>
+                    </button>
+                </div>
+
+                <div class="disk-map-container glass-card">
+                    <div class="disk-map-header">
+                        <div class="disk-info" id="diskInfo">
+                            <span>Select a drive and click "Load Disk Map"</span>
+                        </div>
+                    </div>
+                    <div id="treemapContainer" class="treemap-wrapper">
+                        <div class="treemap-placeholder">
+                            <span>🌲</span>
+                            <p>Disk map will appear here</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Apps Section -->
+            <section id="apps" class="section">
+                <div class="section-header">
+                    <h1 class="section-title">
+                        <span class="title-icon">📦</span>
+                        Installed Applications
+                    </h1>
+                </div>
+
+                <div class="apps-controls glass-card">
+                    <div class="search-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="appSearch" placeholder="Search applications..."
+                            class="input-glass search-input">
+                    </div>
+                    <button class="btn-neon" id="refreshAppsBtn">
+                        <span>🔄</span>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+
+                <div class="apps-list glass-card" id="appsList">
+                    <div class="apps-placeholder">
+                        <span>📦</span>
+                        <p>Click "Refresh" to load installed applications</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Security Section -->
+            <section id="security" class="section">
+                <div class="section-header">
+                    <h1 class="section-title">
+                        <span class="title-icon">🛡️</span>
+                        Security Center
+                    </h1>
+                </div>
+
+                <div class="security-grid">
+                    <div class="security-card glass-card">
+                        <div class="security-icon">🔥</div>
+                        <h2>Firewall Status</h2>
+                        <div id="firewallStatus" class="security-status">
+                            <div class="status-placeholder">Click to check</div>
+                        </div>
+                        <button class="btn-neon btn-full" id="checkFirewallBtn">
+                            <span>🔍</span>
+                            <span>Check Firewall</span>
+                        </button>
+                    </div>
+
+                    <div class="security-card glass-card">
+                        <div class="security-icon">🔌</div>
+                        <h2>Open Ports</h2>
+                        <div id="openPortsList" class="ports-list">
+                            <div class="status-placeholder">Click to scan</div>
+                        </div>
+                        <button class="btn-neon btn-full" id="scanPortsBtn">
+                            <span>🔍</span>
+                            <span>Scan Ports</span>
+                        </button>
+                    </div>
+
+                    <div class="security-card glass-card">
+                        <div class="security-icon">🦠</div>
+                        <h2>Malware Scan</h2>
+                        <div id="malwareScanResults" class="scan-results">
+                            <div class="status-placeholder">Click to scan</div>
+                        </div>
+                        <button class="btn-neon btn-full" id="malwareScanBtn">
+                            <span>🛡️</span>
+                            <span>Run Scan</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Section -->
+            <section id="settings" class="section">
+                <div class="section-header">
+                    <h1 class="section-title">
+                        <span class="title-icon">⚙️</span>
+                        Settings
+                    </h1>
+                </div>
+                <div class="settings-panel glass-card">
+                    <div class="settings-section">
+                        <h2>Voice Assistant</h2>
+                        <p>Control AutoSense X with voice commands</p>
+                        <button class="btn-neon btn-full" id="voiceAssistantBtn">
+                            <span>🎤</span>
+                            <span>Activate Voice Assistant</span>
+                        </button>
+                        <div id="voiceStatus" class="voice-status"></div>
+                    </div>
+                    <div class="settings-section">
+                        <h2>Notifications</h2>
+                        <label class="switch">
+                            <input type="checkbox" id="notificationsToggle" checked>
+                            <span class="slider-switch"></span>
+                            <span>Enable system alerts</span>
+                        </label>
+                    </div>
+                    <div class="settings-section">
+                        <h2>Auto-Refresh</h2>
+                        <label class="switch">
+                            <input type="checkbox" id="autoRefreshToggle" checked>
+                            <span class="slider-switch"></span>
+                            <span>Auto-refresh dashboard</span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
