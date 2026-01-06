@@ -13,7 +13,7 @@
 })();
 // AutoSense X - Enhanced Frontend Application Logic
 
-const API_BASE = 'http://localhost:8000';
+const API_BASE = ''; // Relative path for same-origin deployment
 let authToken = localStorage.getItem('authToken') || null;
 let charts = {};
 let updateInterval = null;
@@ -1157,3 +1157,171 @@ function addLifeBoost(minutes) {
 
 // Make functions globally accessible
 window.uninstallApp = uninstallApp;
+
+// ============================================
+// VIDEO SHOWCASE FUNCTIONALITY
+// ============================================
+
+// Initialize video showcase when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    initializeVideoShowcase();
+});
+
+function initializeVideoShowcase() {
+    const videoContainer = document.getElementById('videoShowcaseContainer');
+    if (!videoContainer) return;
+
+    const sections = videoContainer.querySelectorAll('.video-section');
+    const navDots = videoContainer.querySelectorAll('.showcase-nav-dot');
+    const progressBar = document.getElementById('showcaseProgressBar');
+    const scrollHint = document.getElementById('showcaseScrollHint');
+    let currentSection = 0;
+
+    // Intersection Observer for section activation
+    const observerOptions = {
+        root: videoContainer,
+        threshold: 0.5,
+        rootMargin: '0px'
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const sectionIndex = parseInt(entry.target.dataset.section);
+                activateSection(sectionIndex);
+            }
+        });
+    }, observerOptions);
+
+    sections.forEach(section => {
+        sectionObserver.observe(section);
+    });
+
+    function activateSection(index) {
+        currentSection = index;
+        
+        // Update sections
+        sections.forEach((section, i) => {
+            if (i === index) {
+                section.classList.add('active');
+            } else {
+                section.classList.remove('active');
+            }
+        });
+
+        // Update nav dots
+        navDots.forEach((dot, i) => {
+            if (i === index) {
+                dot.classList.add('active');
+            } else {
+                dot.classList.remove('active');
+            }
+        });
+
+        // Update progress bar
+        const progress = ((index + 1) / sections.length) * 100;
+        if (progressBar) {
+            progressBar.style.width = progress + '%';
+        }
+
+        // Hide scroll hint after first scroll
+        if (index > 0 && scrollHint) {
+            scrollHint.classList.add('hidden');
+        }
+    }
+
+    // Navigation dot click handlers
+    navDots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            sections[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+        // Only handle if video showcase is visible
+        if (!videoContainer.offsetParent) return;
+
+        if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+            if (currentSection < sections.length - 1) {
+                e.preventDefault();
+                sections[currentSection + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // Allow default behavior (page scroll) if at the last section
+        } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+            if (currentSection > 0) {
+                e.preventDefault();
+                sections[currentSection - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // Allow default behavior (page scroll) if at the first section
+        } else if (e.key === 'Home') {
+            e.preventDefault();
+            sections[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else if (e.key === 'End') {
+            e.preventDefault();
+            sections[sections.length - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+
+    // Touch gesture support for mobile
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    videoContainer.addEventListener('touchstart', (e) => {
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    videoContainer.addEventListener('touchend', (e) => {
+        touchEndY = e.changedTouches[0].screenY;
+        handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+        const swipeThreshold = 50;
+        const diff = touchStartY - touchEndY;
+
+        if (Math.abs(diff) > swipeThreshold) {
+            if (diff > 0 && currentSection < sections.length - 1) {
+                // Swipe up - next section
+                sections[currentSection + 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else if (diff < 0 && currentSection > 0) {
+                // Swipe down - previous section
+                sections[currentSection - 1].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }
+
+    // Initialize first section
+    activateSection(0);
+
+    // ==========================================
+    // DEMO REELS OBSERVER (Added)
+    // ==========================================
+    const reelObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const video = entry.target.querySelector('video');
+            if (!video) return;
+
+            if (entry.isIntersecting) {
+                // Play video when in view
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(error => {
+                        console.log('Auto-play prevented:', error);
+                    });
+                }
+            } else {
+                // Pause video when out of view
+                video.pause();
+                video.currentTime = 0; // Reset to start
+            }
+        });
+    }, {
+        threshold: 0.6 // Play when 60% visible
+    });
+
+    // Observer all reel sections
+    document.querySelectorAll('.reel-section').forEach(section => {
+        reelObserver.observe(section);
+    });
+}

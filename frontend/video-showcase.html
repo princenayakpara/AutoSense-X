@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoSense X - Feature Showcase</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Video Showcase Specific Styles */
+    body {
+      overflow-x: hidden;
+    }
+
+    .video-showcase-container {
+      height: 100vh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
+      position: relative;
+    }
+
+    .video-section {
+      height: 100vh;
+      width: 100%;
+      scroll-snap-align: start;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      background-size: cover;
+      background-position: center;
+      transition: transform 0.3s ease;
+    }
+
+    .video-section:hover .video-background {
+      transform: scale(1.05);
+    }
+
+    /* Animated gradient backgrounds for each section */
+    .video-section:nth-child(1) .video-background {
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+      animation: gradientShift1 15s ease infinite;
+    }
+
+    .video-section:nth-child(2) .video-background {
+      background: linear-gradient(135deg, #16213e 0%, #0a0e27 50%, #1a1a2e 100%);
+      animation: gradientShift2 15s ease infinite;
+    }
+
+    .video-section:nth-child(3) .video-background {
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0a0e27 100%);
+      animation: gradientShift3 15s ease infinite;
+    }
+
+    .video-section:nth-child(4) .video-background {
+      background: linear-gradient(135deg, #0a0e27 0%, #16213e 50%, #1a1a2e 100%);
+      animation: gradientShift1 15s ease infinite;
+    }
+
+    .video-section:nth-child(5) .video-background {
+      background: linear-gradient(135deg, #16213e 0%, #1a1a2e 50%, #0a0e27 100%);
+      animation: gradientShift2 15s ease infinite;
+    }
+
+    .video-section:nth-child(6) .video-background {
+      background: linear-gradient(135deg, #1a1a2e 0%, #0a0e27 50%, #16213e 100%);
+      animation: gradientShift3 15s ease infinite;
+    }
+
+    .video-section:nth-child(7) .video-background {
+      background: linear-gradient(135deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%);
+      animation: gradientShift1 15s ease infinite;
+    }
+
+    .video-section:nth-child(8) .video-background {
+      background: linear-gradient(135deg, #16213e 0%, #0a0e27 50%, #1a1a2e 100%);
+      animation: gradientShift2 15s ease infinite;
+    }
+
+    @keyframes gradientShift1 {
+
+      0%,
+      100% {
+        filter: hue-rotate(0deg) brightness(1);
+      }
+
+      50% {
+        filter: hue-rotate(20deg) brightness(1.1);
+      }
+    }
+
+    @keyframes gradientShift2 {
+
+      0%,
+      100% {
+        filter: hue-rotate(0deg) brightness(1);
+      }
+
+      50% {
+        filter: hue-rotate(-20deg) brightness(1.1);
+      }
+    }
+
+    @keyframes gradientShift3 {
+
+      0%,
+      100% {
+        filter: hue-rotate(0deg) brightness(1);
+      }
+
+      50% {
+        filter: hue-rotate(15deg) brightness(1.15);
+      }
+    }
+
+    /* Floating particles effect */
+    .video-background::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(circle at 20% 30%, rgba(0, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(0, 102, 255, 0.08) 0%, transparent 50%);
+      animation: particleFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes particleFloat {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      33% {
+        transform: translate(30px, -30px) scale(1.1);
+      }
+
+      66% {
+        transform: translate(-30px, 30px) scale(0.9);
+      }
+    }
+
+    .video-overlay {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      width: 90%;
+      padding: 3rem;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 40px rgba(0, 255, 255, 0.1);
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .video-section.active .video-overlay {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #00ffff 0%, #0066ff 100%);
+      color: #fff;
+      padding: 0.5rem 1.5rem;
+      border-radius: 25px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      animation: badgePulse 3s ease-in-out infinite;
+    }
+
+    @keyframes badgePulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 20px rgba(0, 255, 255, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 30px rgba(0, 255, 255, 0.6);
+      }
+    }
+
+    .feature-title {
+      font-size: 4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #00ffff 0%, #0066ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      animation: titleSlide 1s ease-out;
+    }
+
+    @keyframes titleSlide {
+      from {
+        opacity: 0;
+        transform: translateX(-50px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .feature-description {
+      font-size: 1.3rem;
+      color: #b0b0b0;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      max-width: 800px;
+    }
+
+    .feature-highlights {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .highlight-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .highlight-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(0, 255, 255, 0.3);
+      transform: translateX(10px);
+    }
+
+    .highlight-icon {
+      font-size: 2rem;
+      color: #00ffff;
+      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+    }
+
+    .highlight-text {
+      font-size: 1rem;
+      color: #fff;
+      font-weight: 500;
+    }
+
+    /* Navigation Dots */
+    .video-nav-dots {
+      position: fixed;
+      right: 3rem;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.3);
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-dot::before {
+      content: attr(data-label);
+      position: absolute;
+      right: 25px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .nav-dot:hover::before {
+      opacity: 1;
+    }
+
+    .nav-dot.active {
+      background: #00ffff;
+      border-color: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+      transform: scale(1.3);
+    }
+
+    /* Scroll Hint */
+    .scroll-hint {
+      position: fixed;
+      bottom: 3rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .scroll-hint.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes bounce {
+
+      0%,
+      100% {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      50% {
+        transform: translateX(-50%) translateY(-10px);
+      }
+    }
+
+    .scroll-hint-text {
+      color: #00ffff;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .scroll-hint-icon {
+      font-size: 2rem;
+      color: #00ffff;
+      filter: drop-shadow(0 0 10px rgba(0, 255, 255, 0.5));
+    }
+
+    /* Back Button */
+    .back-button {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      z-index: 1000;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #fff;
+      padding: 1rem 2rem;
+      border-radius: 15px;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: #00ffff;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+      transform: translateX(-5px);
+    }
+
+    /* Progress Bar */
+    .progress-bar-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 1001;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00ffff 0%, #0066ff 100%);
+      width: 0%;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 20px rgba(0, 255, 255, 0.6);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .feature-title {
+        font-size: 2.5rem;
+      }
+
+      .feature-description {
+        font-size: 1.1rem;
+      }
+
+      .video-overlay {
+        padding: 2rem;
+      }
+
+      .video-nav-dots {
+        right: 1.5rem;
+      }
+
+      .nav-dot::before {
+        display: none;
+      }
+
+      .back-button {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.75rem 1.5rem;
+      }
+
+      .feature-highlights {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Reduced Motion */
+    @media (prefers-reduced-motion: reduce) {
+      .video-showcase-container {
+        scroll-behavior: auto;
+      }
+
+      .video-overlay,
+      .video-background,
+      * {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+
+  <!-- Back Button -->
+  <a href="index.html" class="back-button">
+    <i class="fas fa-arrow-left"></i>
+    <span>Back to Dashboard</span>
+  </a>
+
+  <!-- Navigation Dots -->
+  <div class="video-nav-dots" id="navDots">
+    <div class="nav-dot active" data-index="0" data-label="AI System Brain"></div>
+    <div class="nav-dot" data-index="1" data-label="RAM Boost"></div>
+    <div class="nav-dot" data-index="2" data-label="Disk Map"></div>
+    <div class="nav-dot" data-index="3" data-label="App Manager"></div>
+    <div class="nav-dot" data-index="4" data-label="Security"></div>
+    <div class="nav-dot" data-index="5" data-label="Mobile App"></div>
+    <div class="nav-dot" data-index="6" data-label="Voice Assistant"></div>
+    <div class="nav-dot" data-index="7" data-label="Premium UI"></div>
+  </div>
+
+  <!-- Scroll Hint -->
+  <div class="scroll-hint" id="scrollHint">
+    <span class="scroll-hint-text">Scroll to Explore</span>
+    <i class="fas fa-chevron-down scroll-hint-icon"></i>
+  </div>
+
+  <!-- Video Showcase Container -->
+  <div class="video-showcase-container" id="videoContainer">
+
+    <!-- Section 1: AI System Brain -->
+    <section class="video-section active" data-section="0">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">🧠 AI Powered</span>
+        <h1 class="feature-title">AI System Brain</h1>
+        <p class="feature-description">
+          Advanced machine learning algorithms continuously monitor your system,
+          predicting potential issues before they occur and providing intelligent
+          optimization recommendations in plain English.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-brain highlight-icon"></i>
+            <span class="highlight-text">IsolationForest Anomaly Detection</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-chart-line highlight-icon"></i>
+            <span class="highlight-text">LSTM Time-Series Prediction</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-file-pdf highlight-icon"></i>
+            <span class="highlight-text">AI-Generated PDF Reports</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-lightbulb highlight-icon"></i>
+            <span class="highlight-text">Smart Recommendations</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 2: RAM Boost -->
+    <section class="video-section" data-section="1">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">⚡ Performance</span>
+        <h1 class="feature-title">One-Click RAM Boost</h1>
+        <p class="feature-description">
+          Instantly free up system memory with intelligent process management.
+          Our advanced algorithms identify and optimize memory-hogging applications
+          without disrupting your workflow.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-rocket highlight-icon"></i>
+            <span class="highlight-text">Instant Memory Optimization</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-cogs highlight-icon"></i>
+            <span class="highlight-text">Startup App Manager</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-trash-alt highlight-icon"></i>
+            <span class="highlight-text">Junk File Scanner & Cleaner</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-tachometer-alt highlight-icon"></i>
+            <span class="highlight-text">Real-Time Monitoring</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: Disk Map -->
+    <section class="video-section" data-section="2">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">🌲 Storage Analysis</span>
+        <h1 class="feature-title">WizTree Disk Map Engine</h1>
+        <p class="feature-description">
+          Visualize your entire storage system with an interactive treemap.
+          Instantly identify space-hogging files and folders with beautiful,
+          color-coded visualizations and drill-down capabilities.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-sitemap highlight-icon"></i>
+            <span class="highlight-text">Interactive Treemap Visualization</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-search-plus highlight-icon"></i>
+            <span class="highlight-text">Drill-Down Navigation</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-palette highlight-icon"></i>
+            <span class="highlight-text">Size-Based Color Coding</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-hdd highlight-icon"></i>
+            <span class="highlight-text">Multi-Drive Support</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: App Manager -->
+    <section class="video-section" data-section="3">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">🗑️ Smart Uninstaller</span>
+        <h1 class="feature-title">Revo Uninstaller Pro</h1>
+        <p class="feature-description">
+          Complete application removal with advanced registry scanning.
+          Eliminate leftover files and registry entries that standard
+          uninstallers leave behind, keeping your system clean and optimized.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-list-ul highlight-icon"></i>
+            <span class="highlight-text">Complete App Inventory</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-broom highlight-icon"></i>
+            <span class="highlight-text">Deep Registry Cleanup</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-search highlight-icon"></i>
+            <span class="highlight-text">Leftover File Scanner</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-bolt highlight-icon"></i>
+            <span class="highlight-text">Force Remove Capability</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Security -->
+    <section class="video-section" data-section="4">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">🛡️ Security</span>
+        <h1 class="feature-title">Advanced Security Center</h1>
+        <p class="feature-description">
+          AI-powered malware detection and comprehensive security monitoring.
+          Protect your system with heuristic analysis, port monitoring,
+          and intelligent threat detection that goes beyond traditional antivirus.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-shield-alt highlight-icon"></i>
+            <span class="highlight-text">AI Malware Detection</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-network-wired highlight-icon"></i>
+            <span class="highlight-text">Open Port Monitoring</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-exclamation-triangle highlight-icon"></i>
+            <span class="highlight-text">Suspicious Process Detection</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-chart-bar highlight-icon"></i>
+            <span class="highlight-text">Risk Scoring System</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 6: Mobile App -->
+    <section class="video-section" data-section="5">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">📱 Cross-Platform</span>
+        <h1 class="feature-title">Mobile Companion App</h1>
+        <p class="feature-description">
+          Control your PC from anywhere with our beautiful Flutter mobile app.
+          Monitor system health, trigger optimizations, and receive alerts
+          on-the-go with a premium mobile experience.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-mobile-alt highlight-icon"></i>
+            <span class="highlight-text">Full Remote Control</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-sync-alt highlight-icon"></i>
+            <span class="highlight-text">Real-Time Sync</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-bell highlight-icon"></i>
+            <span class="highlight-text">Push Notifications</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-paint-brush highlight-icon"></i>
+            <span class="highlight-text">Premium UI Design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 7: Voice Assistant -->
+    <section class="video-section" data-section="6">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">🎤 Voice Control</span>
+        <h1 class="feature-title">Voice Assistant</h1>
+        <p class="feature-description">
+          "Hey AutoSense" - Control your PC with natural voice commands.
+          Our intelligent voice assistant understands context and executes
+          complex system operations through simple conversational requests.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-microphone highlight-icon"></i>
+            <span class="highlight-text">Natural Language Processing</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-comments highlight-icon"></i>
+            <span class="highlight-text">Conversational Interface</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-magic highlight-icon"></i>
+            <span class="highlight-text">Context-Aware Commands</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-volume-up highlight-icon"></i>
+            <span class="highlight-text">Voice Feedback</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 8: Premium UI -->
+    <section class="video-section" data-section="7">
+      <div class="video-background"></div>
+      <div class="video-overlay">
+        <span class="feature-badge">🎨 Design Excellence</span>
+        <h1 class="feature-title">Premium UI Design</h1>
+        <p class="feature-description">
+          Experience the future of system management with our stunning
+          glassmorphism interface. Every interaction is crafted with attention
+          to detail, featuring smooth animations and a cyberpunk aesthetic.
+        </p>
+        <div class="feature-highlights">
+          <div class="highlight-item">
+            <i class="fas fa-gem highlight-icon"></i>
+            <span class="highlight-text">Glassmorphism Effects</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-moon highlight-icon"></i>
+            <span class="highlight-text">Neon Dark Mode</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-bezier-curve highlight-icon"></i>
+            <span class="highlight-text">Smooth Animations</span>
+          </div>
+          <div class="highlight-item">
+            <i class="fas fa-desktop highlight-icon"></i>
+            <span class="highlight-text">Responsive Design</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    // Video Showcase JavaScript
+    const videoContainer = document.getElementById('videoContainer');
+    const sections = document.querySelectorAll('.video-section');
+    const navDots = document.querySelectorAll('.nav-dot');
+    const progressBar = document.getElementById('progressBar');
+    const scrollHint = document.getElementById('scrollHint');
+    let currentSection = 0;
+
+    // Intersection Observer for section activation
+    const observerOptions = {
+      root: null,
+      threshold: 0.5,
+      rootMargin: '0px'
+    };
+
+    const sectionObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const sectionIndex = parseInt(entry.target.dataset.section);
+          activateSection(sectionIndex);
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(section => {
+      sectionObserver.observe(section);
+    });
+
+    function activateSection(index) {
+      currentSection = index;
+
+      // Update sections
+      sections.forEach((section, i) => {
+        if (i === index) {
+          section.classList.add('active');
+        } else {
+          section.classList.remove('active');
+        }
+      });
+
+      // Update nav dots
+      navDots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.add('active');
+        } else {
+          dot.classList.remove('active');
+        }
+      });
+
+      // Update progress bar
+      const progress = ((index + 1) / sections.length) * 100;
+      progressBar.style.width = progress + '%';
+
+      // Hide scroll hint after first scroll
+      if (index > 0) {
+        scrollHint.classList.add('hidden');
+      }
+    }
+
+    // Navigation dot click handlers
+    navDots.forEach((dot, index) => {
+      dot.addEventListener('click', () => {
+        sections[index].scrollIntoView({ behavior: 'smooth' });
+      });
+    });
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        if (currentSection < sections.length - 1) {
+          sections[currentSection + 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        if (currentSection > 0) {
+          sections[currentSection - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        sections[0].scrollIntoView({ behavior: 'smooth' });
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        sections[sections.length - 1].scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+
+    // Touch gesture support for mobile
+    let touchStartY = 0;
+    let touchEndY = 0;
+
+    videoContainer.addEventListener('touchstart', (e) => {
+      touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    videoContainer.addEventListener('touchend', (e) => {
+      touchEndY = e.changedTouches[0].screenY;
+      handleSwipe();
+    }, { passive: true });
+
+    function handleSwipe() {
+      const swipeThreshold = 50;
+      const diff = touchStartY - touchEndY;
+
+      if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0 && currentSection < sections.length - 1) {
+          // Swipe up - next section
+          sections[currentSection + 1].scrollIntoView({ behavior: 'smooth' });
+        } else if (diff < 0 && currentSection > 0) {
+          // Swipe down - previous section
+          sections[currentSection - 1].scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+
+    // Initialize first section
+    activateSection(0);
+
+    // Parallax effect on scroll
+    videoContainer.addEventListener('scroll', () => {
+      const scrolled = videoContainer.scrollTop;
+      sections.forEach((section, index) => {
+        const sectionTop = section.offsetTop;
+        const offset = scrolled - sectionTop;
+        const overlay = section.querySelector('.video-overlay');
+
+        if (overlay) {
+          const parallaxSpeed = 0.3;
+          overlay.style.transform = `translateY(${offset * parallaxSpeed}px)`;
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

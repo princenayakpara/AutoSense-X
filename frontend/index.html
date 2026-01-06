@@ -155,42 +155,356 @@
                     </div>
                 </div>
 
-                <!-- Feature Showcase Section -->
-                <div id="showcase-anchor" class="showcase-section">
-                    <div class="section-badge">Capabilities</div>
-                    <h2 class="showcase-title">Advanced Feature Demos</h2>
-                    <div class="showcase-grid">
-                        <div class="showcase-card glass-card">
-                            <div class="demo-visual">
-                                <img src="static/demo_disk_map_1767687237776.png" alt="Disk Map Demo">
-                                <div class="play-overlay"><span>▶</span></div>
+                <!-- Enhanced Video Showcase Section -->
+                <div id="showcase-anchor" class="video-showcase-wrapper">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="title-icon">🎬</span>
+                            Feature Showcase
+                        </h2>
+                    </div>
+
+                    <div class="video-showcase-container" id="videoShowcaseContainer">
+                        <!-- Progress Bar -->
+                        <div class="showcase-progress-bar-container">
+                            <div class="showcase-progress-bar-fill" id="showcaseProgressBar"></div>
+                        </div>
+
+                        <!-- Navigation Dots -->
+                        <div class="showcase-nav-dots" id="showcaseNavDots">
+                            <div class="showcase-nav-dot active" data-index="0" data-label="AI System Brain"></div>
+                            <div class="showcase-nav-dot" data-index="1" data-label="RAM Boost"></div>
+                            <div class="showcase-nav-dot" data-index="2" data-label="Disk Map"></div>
+                            <div class="showcase-nav-dot" data-index="3" data-label="App Manager"></div>
+                            <div class="showcase-nav-dot" data-index="4" data-label="Security"></div>
+                            <div class="showcase-nav-dot" data-index="5" data-label="Voice Assistant"></div>
+                            <div class="showcase-nav-dot" data-index="6" data-label="Premium UI"></div>
+                        </div>
+
+                        <!-- Scroll Hint -->
+                        <div class="showcase-scroll-hint" id="showcaseScrollHint">
+                            <span class="showcase-scroll-hint-text">Scroll to Explore</span>
+                            <span class="showcase-scroll-hint-icon">⬇️</span>
+                        </div>
+
+                        <!-- Section 1: AI System Brain -->
+                        <section class="video-section active" data-section="0">
+                            <!-- AI Brain Demo Scene -->
+                            <div class="demo-scene scene-ai-brain">
+                                <div class="ai-node node-1"></div>
+                                <div class="ai-node node-2"></div>
+                                <div class="ai-node node-3"></div>
+                                <div class="ai-connection conn-1"></div>
+                                <div class="ai-connection conn-2"></div>
+                                <div class="ai-connection conn-3"></div>
+                                <div class="ai-pulse-ring"></div>
                             </div>
-                            <div class="showcase-content">
-                                <h3>Visual Disk Mapping</h3>
-                                <p>Non-recursive, high-speed scanning of terabytes in seconds. Powered by D3.js
-                                    visualization.</p>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">🧠 AI Powered</span>
+                                <h1 class="showcase-feature-title">AI System Brain</h1>
+                                <p class="showcase-feature-description">
+                                    Advanced machine learning algorithms continuously monitor your system,
+                                    predicting potential issues before they occur and providing intelligent
+                                    optimization recommendations in plain English.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🔮</span>
+                                        <span class="showcase-highlight-text">IsolationForest Anomaly Detection</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">📈</span>
+                                        <span class="showcase-highlight-text">LSTM Time-Series Prediction</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">📄</span>
+                                        <span class="showcase-highlight-text">AI-Generated PDF Reports</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">💡</span>
+                                        <span class="showcase-highlight-text">Smart Recommendations</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 2: RAM Boost -->
+                        <section class="video-section" data-section="1">
+                            <!-- RAM Boost Demo Scene -->
+                            <div class="demo-scene scene-ram-boost">
+                                <div class="boost-circle"></div>
+                                <div class="boost-particle p1"></div>
+                                <div class="boost-particle p2"></div>
+                                <div class="boost-particle p3"></div>
+                                <div class="boost-rocket">🚀</div>
+                                <div class="boost-speed-lines"></div>
+                            </div>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">⚡ Performance</span>
+                                <h1 class="showcase-feature-title">One-Click RAM Boost</h1>
+                                <p class="showcase-feature-description">
+                                    Instantly free up system memory with intelligent process management.
+                                    Our advanced algorithms identify and optimize memory-hogging applications
+                                    without disrupting your workflow.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🚀</span>
+                                        <span class="showcase-highlight-text">Instant Memory Optimization</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">⚙️</span>
+                                        <span class="showcase-highlight-text">Startup App Manager</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🗑️</span>
+                                        <span class="showcase-highlight-text">Junk File Scanner & Cleaner</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">📊</span>
+                                        <span class="showcase-highlight-text">Real-Time Monitoring</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 3: Disk Map -->
+                        <section class="video-section" data-section="2">
+                            <!-- Disk Map Demo Scene -->
+                            <div class="demo-scene scene-disk-map">
+                                <div class="disk-grid">
+                                    <div class="disk-block b1"></div>
+                                    <div class="disk-block b2"></div>
+                                    <div class="disk-block b3"></div>
+                                    <div class="disk-block b4"></div>
+                                </div>
+                                <div class="disk-scanner-line"></div>
+                            </div>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">🌲 Storage Analysis</span>
+                                <h1 class="showcase-feature-title">WizTree Disk Map Engine</h1>
+                                <p class="showcase-feature-description">
+                                    Visualize your entire storage system with an interactive treemap.
+                                    Instantly identify space-hogging files and folders with beautiful,
+                                    color-coded visualizations and drill-down capabilities.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🗺️</span>
+                                        <span class="showcase-highlight-text">Interactive Treemap Visualization</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🔍</span>
+                                        <span class="showcase-highlight-text">Drill-Down Navigation</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🎨</span>
+                                        <span class="showcase-highlight-text">Size-Based Color Coding</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">💾</span>
+                                        <span class="showcase-highlight-text">Multi-Drive Support</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 4: App Manager -->
+                        <section class="video-section" data-section="3">
+                            <!-- App Manager Demo (Placeholder) -->
+                            <div class="video-background"></div>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">📦 Smart Uninstaller</span>
+                                <h1 class="showcase-feature-title">Revo Uninstaller Pro</h1>
+                                <p class="showcase-feature-description">
+                                    Complete application removal with advanced registry scanning.
+                                    Eliminate leftover files and registry entries that standard
+                                    uninstallers leave behind, keeping your system clean and optimized.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">📋</span>
+                                        <span class="showcase-highlight-text">Complete App Inventory</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🧹</span>
+                                        <span class="showcase-highlight-text">Deep Registry Cleanup</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🔎</span>
+                                        <span class="showcase-highlight-text">Leftover File Scanner</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">⚡</span>
+                                        <span class="showcase-highlight-text">Force Remove Capability</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 5: Security -->
+                        <section class="video-section" data-section="4">
+                            <!-- Security Demo Scene -->
+                            <div class="demo-scene scene-security">
+                                <div class="radar-circle c1"></div>
+                                <div class="radar-circle c2"></div>
+                                <div class="radar-scanner"></div>
+                                <div class="radar-dot d1"></div>
+                                <div class="radar-dot d2"></div>
+                                <div class="radar-shield">🛡️</div>
+                            </div>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">🛡️ Security</span>
+                                <h1 class="showcase-feature-title">Advanced Security Center</h1>
+                                <p class="showcase-feature-description">
+                                    AI-powered malware detection and comprehensive security monitoring.
+                                    Protect your system with heuristic analysis, port monitoring,
+                                    and intelligent threat detection that goes beyond traditional antivirus.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🤖</span>
+                                        <span class="showcase-highlight-text">AI Malware Detection</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🔌</span>
+                                        <span class="showcase-highlight-text">Open Port Monitoring</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">⚠️</span>
+                                        <span class="showcase-highlight-text">Suspicious Process Detection</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">📊</span>
+                                        <span class="showcase-highlight-text">Risk Scoring System</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 6: Voice Assistant -->
+                        <section class="video-section" data-section="5">
+                            <div class="video-background"></div>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">🎤 Voice Control</span>
+                                <h1 class="showcase-feature-title">Voice Assistant</h1>
+                                <p class="showcase-feature-description">
+                                    "Hey AutoSense" - Control your PC with natural voice commands.
+                                    Our intelligent voice assistant understands context and executes
+                                    complex system operations through simple conversational requests.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🗣️</span>
+                                        <span class="showcase-highlight-text">Natural Language Processing</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">💬</span>
+                                        <span class="showcase-highlight-text">Conversational Interface</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🎯</span>
+                                        <span class="showcase-highlight-text">Context-Aware Commands</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🔊</span>
+                                        <span class="showcase-highlight-text">Voice Feedback</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Section 7: Premium UI -->
+                        <section class="video-section" data-section="6">
+                            <div class="video-background"></div>
+                            <div class="side-circle-left"></div>
+                            <div class="side-circle-right"></div>
+                            <div class="video-overlay">
+                                <span class="showcase-feature-badge">🎨 Design Excellence</span>
+                                <h1 class="showcase-feature-title">Premium UI Design</h1>
+                                <p class="showcase-feature-description">
+                                    Experience the future of system management with our stunning
+                                    glassmorphism interface. Every interaction is crafted with attention
+                                    to detail, featuring smooth animations and a cyberpunk aesthetic.
+                                </p>
+                                <div class="showcase-feature-highlights">
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">💎</span>
+                                        <span class="showcase-highlight-text">Glassmorphism Effects</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">🌙</span>
+                                        <span class="showcase-highlight-text">Neon Dark Mode</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">✨</span>
+                                        <span class="showcase-highlight-text">Smooth Animations</span>
+                                    </div>
+                                    <div class="showcase-highlight-item">
+                                        <span class="showcase-highlight-icon">📱</span>
+                                        <span class="showcase-highlight-text">Responsive Design</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- ============================================
+                     DEMO REELS SECTION
+                     ============================================ -->
+                <div id="demo-reels-anchor" class="demo-reels-wrapper">
+                    <div class="section-header">
+                        <h1 class="section-title">
+                            <span class="title-icon">📽️</span>
+                            Live Demos
+                        </h1>
+                        <p class="section-subtitle">Real-time performance in action</p>
+                    </div>
+
+                    <div class="demo-reels-container">
+                        <!-- Reel 1 -->
+                        <div class="reel-section">
+                            <video class="reel-video" loop muted playsinline>
+                                <source src="static/videos/demo-1.mp4" type="video/mp4">
+                            </video>
+                            <div class="reel-overlay">
+                                <h3>AI Diagnostics</h3>
+                                <p>Watch the system identify and fix issues in real-time.</p>
                             </div>
                         </div>
-                        <div class="showcase-card glass-card">
-                            <div class="demo-visual">
-                                <img src="static/demo_ai_brain_1767687282168.png" alt="AI Brain Demo">
-                                <div class="play-overlay"><span>▶</span></div>
-                            </div>
-                            <div class="showcase-content">
-                                <h3>AI Health Prediction</h3>
-                                <p>Deep learning models predict hardware failure before it happens. Real-time risk
-                                    analysis.</p>
+
+                        <!-- Reel 2 -->
+                        <div class="reel-section">
+                            <video class="reel-video" loop muted playsinline>
+                                <source src="static/videos/demo-2.mp4" type="video/mp4">
+                            </video>
+                            <div class="reel-overlay">
+                                <h3>Memory Optimization</h3>
+                                <p>See RAM usage drop instantly with a single click.</p>
                             </div>
                         </div>
-                        <div class="showcase-card glass-card">
-                            <div class="demo-visual">
-                                <img src="static/demo_optimizer_1767687300936.png" alt="Optimizer Demo">
-                                <div class="play-overlay"><span>▶</span></div>
-                            </div>
-                            <div class="showcase-content">
-                                <h3>Instant Optimization</h3>
-                                <p>One-click garbage collection and thermal regulation. Extend hardware lifespan
-                                    instantly.</p>
+
+                        <!-- Reel 3 -->
+                        <div class="reel-section">
+                            <video class="reel-video" loop muted playsinline>
+                                <source src="static/videos/demo-3.mp4" type="video/mp4">
+                            </video>
+                            <div class="reel-overlay">
+                                <h3>Security Shield</h3>
+                                <p>Active threat protection blocking live attacks.</p>
                             </div>
                         </div>
                     </div>

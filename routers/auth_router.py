@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
@@ -82,9 +82,12 @@ async def verify_registration(data: OTPVerify, db: Session = Depends(get_db)):
 # ---------- Google OAuth ----------
 
 @router.get("/google")
-async def google_login():
+async def google_login(request: Request):
     client_id = os.getenv("GOOGLE_CLIENT_ID")
-    redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/google/callback")
+    # Dynamic redirect URI based on request host
+    host = str(request.base_url).rstrip('/')
+    default_redirect = f"{host}/api/auth/google/callback"
+    redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", default_redirect)
 
     if not client_id:
         raise HTTPException(status_code=500, detail="GOOGLE_CLIENT_ID not configured")
@@ -102,10 +105,13 @@ async def google_login():
     return RedirectResponse(google_url)
 
 @router.get("/google/callback")
-async def google_callback(code: str, db: Session = Depends(get_db)):
+async def google_callback(request: Request, code: str, db: Session = Depends(get_db)):
     client_id = os.getenv("GOOGLE_CLIENT_ID")
     client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
-    redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", "http://localhost:8000/api/auth/google/callback")
+    
+    host = str(request.base_url).rstrip('/')
+    default_redirect = f"{host}/api/auth/google/callback"
+    redirect_uri = os.getenv("GOOGLE_REDIRECT_URI", default_redirect)
 
     async with httpx.AsyncClient() as client:
         token_res = await client.post("https://oauth2.googleapis.com/token", data={
@@ -136,7 +142,7 @@ async def google_callback(code: str, db: Session = Depends(get_db)):
     db.refresh(user)
 
     jwt_token = create_access_token({"sub": user.username})
-    return RedirectResponse(f"http://localhost:8000/?token={jwt_token}")
+    return RedirectResponse(f"{host}/?token={jwt_token}")
 
 
 # ---------- Protected ----------
