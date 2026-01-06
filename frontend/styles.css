@@ -3591,6 +3591,7 @@ body::before {
         opacity: 0;
     }
 }
+
 /* DEMO REELS SECTION */
 .demo-reels-wrapper {
     width: 100%;
@@ -3634,7 +3635,7 @@ body::before {
     left: 0;
     width: 100%;
     padding: 2rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     z-index: 2;
     pointer-events: none;
 }
