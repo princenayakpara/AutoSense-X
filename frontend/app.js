@@ -163,7 +163,10 @@ function setupEventListeners() {
     document.getElementById('boostRamBtn')?.addEventListener('click', boostRAM);
     document.getElementById('cleanJunkBtn')?.addEventListener('click', cleanJunkFiles);
     document.getElementById('optimizeBtn')?.addEventListener('click', autoOptimize);
-    document.getElementById('scanSecurityBtn')?.addEventListener('click', () => showSection('security'));
+    document.getElementById('scanSecurityBtn')?.addEventListener('click', () => {
+        triggerAnimation('protectContainer');
+        setTimeout(() => showSection('security'), 1000);
+    });
     document.getElementById('refreshDashboard')?.addEventListener('click', () => {
         loadDashboard();
         showToast('Dashboard refreshed', 'success');
@@ -592,13 +595,25 @@ function updateNotifBadge(count) {
 }
 
 // System Actions
+function triggerAnimation(containerId) {
+    const container = document.getElementById(containerId);
+    if (container) {
+        const animationClass = containerId === 'rocketContainer' ? 'launching' : 'animating';
+        container.classList.add(animationClass);
+        setTimeout(() => {
+            container.classList.remove(animationClass);
+        }, 1500); // Consistent 1.5s total time (animation itself is 1s)
+    }
+}
+
 async function boostRAM() {
     try {
+        triggerAnimation('rocketContainer');
         showToast('Boosting RAM...', 'info');
         const result = await apiCall('/api/boost-ram', { method: 'POST' });
         if (result && result.success) {
             showToast(`RAM Boosted! Freed ${result.freed_percent}% memory`, 'success');
-            addLifeBoost(0.1); // ~3 days
+            addLifeBoost(30); // +30 Minutes
             loadDashboard();
         }
     } catch (error) {
@@ -608,35 +623,38 @@ async function boostRAM() {
 
 async function cleanJunkFiles() {
     try {
-        showToast('Scanning for junk files...', 'info');
         const scanResult = await apiCall('/api/junk-files/scan');
-        if (scanResult && scanResult.success) {
+        if (scanResult && scanResult.total_size_mb > 0) {
             if (confirm(`Found ${scanResult.total_size_mb} MB of junk files. Clean them?`)) {
+                triggerAnimation('junkContainer');
                 showToast('Cleaning junk files...', 'info');
                 const cleanResult = await apiCall('/api/junk-files/clean', { method: 'POST' });
                     if (cleanResult && cleanResult.success) {
                         showToast(`Cleaned ${cleanResult.cleaned_files} files, freed ${cleanResult.freed_size_mb} MB`, 'success');
-                        addLifeBoost(0.2); // ~6 days
+                        addLifeBoost(60); // +60 Minutes
                         loadDashboard();
                     }
             }
+        } else {
+            showToast('No junk files found. System is clean!', 'success');
         }
     } catch (error) {
-        showToast('Error cleaning junk files: ' + error.message, 'error');
+        showToast('Error cleaning junk: ' + error.message, 'error');
     }
 }
 
 async function autoOptimize() {
     try {
-        showToast('Starting auto-optimization...', 'info');
+        triggerAnimation('starsContainer');
+        showToast('Running AI Auto-Optimization...', 'info');
         const result = await apiCall('/api/ai/auto-optimize', { method: 'POST' });
         if (result && result.success) {
             showToast('Auto-optimization completed!', 'success');
-            addLifeBoost(0.4); // ~12 days
+            addLifeBoost(120); // +120 Minutes
             loadDashboard();
         }
     } catch (error) {
-        showToast('Error optimizing: ' + error.message, 'error');
+        showToast('Optimization error: ' + error.message, 'error');
     }
 }
 
@@ -1102,11 +1120,8 @@ function updateHealthSaver() {
 
     let totalLife = baseLife + cpuFactor + ramFactor + diskFactor;
     
-    // Add optimization history boost (stored in months, e.g. 0.1 months = ~3 days)
-    const savedMonths = parseFloat(localStorage.getItem('lifeSavedMonths') || 0);
-    totalLife += (savedMonths / 12);
-
-    const lifeSavedCalculated = Math.max(0, totalLife - baseLife);
+    const savedMinutes = parseFloat(localStorage.getItem('lifeSavedMinutes') || 0);
+    totalLife += (savedMinutes / 525600); 
 
     const projLifeEl = document.getElementById('projectedLife');
     const lifeSavedEl = document.getElementById('lifeSaved');
@@ -1115,14 +1130,13 @@ function updateHealthSaver() {
     if (projLifeEl) projLifeEl.innerText = totalLife.toFixed(1) + " Years";
     
     if (lifeSavedEl) {
-        const totalSavedMonths = lifeSavedCalculated * 12;
-        if (totalSavedMonths < 1) {
-            // Show days if less than a month
-            const days = Math.round(totalSavedMonths * 30.44);
-            lifeSavedEl.innerText = "+" + days + " Days";
+        // Always show the pure accumulated boost from user actions
+        const totalSavedMin = Math.round(savedMinutes);
+        if (totalSavedMin < 60) {
+            lifeSavedEl.innerText = "+" + totalSavedMin + " Minutes";
         } else {
-            // Show months with one decimal for precision
-            lifeSavedEl.innerText = "+" + totalSavedMonths.toFixed(1) + " Months";
+            const hours = (totalSavedMin / 60).toFixed(1);
+            lifeSavedEl.innerText = "+" + hours + " Hours";
         }
     }
     
@@ -1131,13 +1145,13 @@ function updateHealthSaver() {
     if (healthScoreEl) healthScoreEl.innerText = Math.round(score) + "%";
 }
 
-function addLifeBoost(months) {
-    let saved = parseFloat(localStorage.getItem('lifeSavedMonths') || 0);
-    saved += months;
-    localStorage.setItem('lifeSavedMonths', saved);
+function addLifeBoost(minutes) {
+    let saved = parseFloat(localStorage.getItem('lifeSavedMinutes') || 0);
+    saved += minutes;
+    localStorage.setItem('lifeSavedMinutes', saved);
     updateHealthSaver();
     
-    let displayValue = months < 1 ? Math.round(months * 30.44) + " days" : months + " month(s)";
+    let displayValue = minutes >= 60 ? (minutes / 60).toFixed(1) + " hours" : minutes + " minutes";
     showToast(`Device health improved! +${displayValue} added to lifespan via AI optimization.`, 'success');
 }
 
