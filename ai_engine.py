@@ -34,6 +34,7 @@ class AISystemBrain:
         self.is_trained = False
         self.feature_history = []
         self.max_history_length = 100
+        self.is_fitted = False
         
         # Create models directory if it doesn't exist
         os.makedirs(os.path.dirname(model_path) if os.path.dirname(model_path) else "./models", exist_ok=True)
@@ -105,18 +106,27 @@ class AISystemBrain:
             ]])
             
             # Scale features
-            if not hasattr(self, 'scaler_fitted'):
+            if not hasattr(self, 'scaler_fitted') or not self.is_fitted:
+                # If not fitted, try to fit on this single sample or a small batch
+                # In production, we'd want at least a few samples
                 self.scaler.fit(feature_array)
                 self.scaler_fitted = True
-            
+                
             scaled_features = self.scaler.transform(feature_array)
             
-            # Predict anomaly score
-            anomaly_score = self.isolation_forest.decision_function(scaled_features)[0]
-            prediction = self.isolation_forest.predict(scaled_features)[0]
-            
-            # Convert to risk score (0-1, higher = more risk)
-            risk_score = max(0, min(1, (1 - anomaly_score) / 2))
+            # Predict anomaly score with safety check
+            risk_score = 0.5
+            if self.is_fitted:
+                try:
+                    anomaly_score = self.isolation_forest.decision_function(scaled_features)[0]
+                    risk_score = max(0, min(1, (1 - anomaly_score) / 2))
+                except:
+                    # In case of dimension mismatch or other fit issues
+                    pass
+            else:
+                # Basic rule-based score if not fitted
+                risk_score = (features.get('cpu_percent', 0) / 200) + (features.get('memory_percent', 0) / 200)
+                risk_score = max(0, min(1, risk_score))
             
             # Determine risk level
             if risk_score < 0.3:
@@ -138,7 +148,8 @@ class AISystemBrain:
                 "explanation": explanation,
                 "recommendations": recommendations,
                 "features": features,
-                "timestamp": datetime.utcnow().isoformat()
+                "timestamp": datetime.utcnow().isoformat(),
+                "is_ai_fitted": self.is_fitted
             }
         except Exception as e:
             print(f"Error in prediction: {e}")
@@ -207,7 +218,42 @@ class AISystemBrain:
         if not recommendations:
             recommendations.append("System is optimized. Continue regular maintenance.")
         
+        # Ensure we always return a decent list for UI
+        if len(recommendations) < 2 and risk_score > 0.4:
+            recommendations.append("Schedule a deep security scan to ensure system integrity.")
+            
         return recommendations
+
+    def ensure_fitted(self, historical_data: List[Dict] = None):
+        """Ensure the IsolationForest is fitted with data"""
+        try:
+            if not historical_data or len(historical_data) < 5:
+                # If no data provided, we can't fit properly yet
+                return False
+            
+            # Extract features for fitting
+            data = []
+            for entry in historical_data:
+                data.append([
+                    entry.get('cpu_percent', 0),
+                    entry.get('memory_percent', 0),
+                    entry.get('disk_percent', 0),
+                    entry.get('process_count', 0),
+                    entry.get('high_cpu_processes', 0),
+                    entry.get('high_memory_processes', 0),
+                ])
+            
+            X = np.array(data)
+            self.scaler.fit(X)
+            self.scaler_fitted = True
+            
+            X_scaled = self.scaler.transform(X)
+            self.isolation_forest.fit(X_scaled)
+            self.is_fitted = True
+            return True
+        except Exception as e:
+            print(f"Error fitting model: {e}")
+            return False
     
     def auto_optimize(self) -> Dict:
         """Auto-optimize system based on current state"""

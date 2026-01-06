@@ -35,6 +35,25 @@ async def predict_system_health(
 ):
     """Get AI prediction of system health and degradation risk"""
     try:
+        # Bootstrap AI if not fitted
+        if not ai_engine.is_fitted:
+            from database import SystemMetrics
+            # Get last 50 metrics for decent fitting
+            metrics = db.query(SystemMetrics).order_by(SystemMetrics.timestamp.desc()).limit(50).all()
+            if metrics:
+                # Convert list of objects to list of dicts
+                metric_dicts = []
+                for m in metrics:
+                    metric_dicts.append({
+                        'cpu_percent': m.cpu_percent,
+                        'memory_percent': m.memory_percent,
+                        'disk_percent': m.disk_percent,
+                        'process_count': m.process_count,
+                        'high_cpu_processes': 0, # Approximation or add column
+                        'high_memory_processes': 0
+                    })
+                ai_engine.ensure_fitted(metric_dicts)
+
         prediction = ai_engine.predict_degradation_risk()
         
         # Store prediction in database

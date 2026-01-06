@@ -67,6 +67,24 @@
                     <div class="user-info" id="userInfo" style="display: none;">
                         <span id="usernameDisplay"></span>
                     </div>
+                    <div class="nav-notifications" id="navNotifications">
+                        <button class="nav-icon-btn" id="notifBell">
+                            <span>🔔</span>
+                            <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                        </button>
+                        <div class="notif-dropdown glass-card" id="notifDropdown">
+                            <div class="notif-header">
+                                <h3>System Notifications</h3>
+                                <button class="btn-text" id="clearNotifs">Clear All</button>
+                            </div>
+                            <div class="notif-list" id="alertsList">
+                                <div class="notif-placeholder">
+                                    <span>🔔</span>
+                                    <p>No new notifications</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <button id="loginBtn" class="btn-glass">Login</button>
                     <button id="logoutBtn" class="btn-glass" style="display: none;">Logout</button>
                 </div>
@@ -81,10 +99,10 @@
             <div class="modal-content glass-card modal-animate">
                 <span class="close">&times;</span>
                 <div class="modal-header">
-                    <img src="static/logo.jpg" alt="Logo"
+                    <img src="logo.jpg" alt="Logo"
                         style="width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--neon-cyan); box-shadow: 0 0 10px var(--neon-cyan); margin-bottom: 1rem;">
                     <h2>Welcome to AutoSense X</h2>
-                    <p>Ultimate AI System Guardian</p>
+                    <div class="modal-subtitle">Ultimate AI System Guardian</div>
                 </div>
                 <form id="loginForm">
                     <div class="input-group">
@@ -118,7 +136,67 @@
         <main class="main-content">
             <!-- Dashboard Section -->
             <section id="dashboard" class="section active">
-                <div class="section-header">
+                <!-- Premium Cyber Hero -->
+                <div class="cyber-hero">
+                    <div class="hero-glow-1"></div>
+                    <div class="hero-glow-2"></div>
+                    <div class="hero-content">
+                        <div class="hero-badge">Next-Gen System Guardian</div>
+                        <h1 class="hero-title">AutoSense <span>X</span></h1>
+                        <p class="hero-subtitle">Your PC's Digital Immune System. Powered by AI. Refined by Design.</p>
+                        <div class="hero-cta-group">
+                            <button class="btn btn-cyber-primary"
+                                onclick="document.getElementById('stats-anchor').scrollIntoView({behavior: 'smooth'})">Get
+                                Started</button>
+                            <button class="btn btn-glass"
+                                onclick="document.getElementById('showcase-anchor').scrollIntoView({behavior: 'smooth'})">Watch
+                                Demos</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Feature Showcase Section -->
+                <div id="showcase-anchor" class="showcase-section">
+                    <div class="section-badge">Capabilities</div>
+                    <h2 class="showcase-title">Advanced Feature Demos</h2>
+                    <div class="showcase-grid">
+                        <div class="showcase-card glass-card">
+                            <div class="demo-visual">
+                                <img src="static/demo_disk_map_1767687237776.png" alt="Disk Map Demo">
+                                <div class="play-overlay"><span>▶</span></div>
+                            </div>
+                            <div class="showcase-content">
+                                <h3>Visual Disk Mapping</h3>
+                                <p>Non-recursive, high-speed scanning of terabytes in seconds. Powered by D3.js
+                                    visualization.</p>
+                            </div>
+                        </div>
+                        <div class="showcase-card glass-card">
+                            <div class="demo-visual">
+                                <img src="static/demo_ai_brain_1767687282168.png" alt="AI Brain Demo">
+                                <div class="play-overlay"><span>▶</span></div>
+                            </div>
+                            <div class="showcase-content">
+                                <h3>AI Health Prediction</h3>
+                                <p>Deep learning models predict hardware failure before it happens. Real-time risk
+                                    analysis.</p>
+                            </div>
+                        </div>
+                        <div class="showcase-card glass-card">
+                            <div class="demo-visual">
+                                <img src="static/demo_optimizer_1767687300936.png" alt="Optimizer Demo">
+                                <div class="play-overlay"><span>▶</span></div>
+                            </div>
+                            <div class="showcase-content">
+                                <h3>Instant Optimization</h3>
+                                <p>One-click garbage collection and thermal regulation. Extend hardware lifespan
+                                    instantly.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="stats-anchor" class="section-header">
                     <h1 class="section-title">
                         <span class="title-icon">📊</span>
                         System Dashboard
@@ -186,22 +264,27 @@
                         </div>
                     </div>
 
-                    <div class="stat-card glass-card stat-card-processes">
+                    <div class="stat-card glass-card stat-card-health">
                         <div class="stat-header">
-                            <div class="stat-icon">⚡</div>
+                            <div class="stat-icon">🔋</div>
                         </div>
                         <div class="stat-info">
-                            <h3>Processes</h3>
-                            <div class="stat-value" id="processCount">0</div>
-                            <div class="stat-subtitle">Running</div>
+                            <h3>Health Life Saver</h3>
+                            <div class="stat-value" id="currentHealthScore">100%</div>
+                            <div class="stat-subtitle">Excellent</div>
                         </div>
-                        <div class="stat-progress">
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="processProgress" style="width: 0%"></div>
+                        <div class="health-meter">
+                            <div class="health-stat">
+                                <span class="label">Projected Lifespan</span>
+                                <span class="value" id="projectedLife">5.0 Years</span>
+                            </div>
+                            <div class="health-stat">
+                                <span class="label">Total Life Saved</span>
+                                <span class="value" id="lifeSaved">+0 Months</span>
                             </div>
                         </div>
                         <div class="stat-footer">
-                            <span class="stat-label">Active Processes</span>
+                            <span class="stat-label">AI Lifespan Projection</span>
                         </div>
                     </div>
                 </div>
@@ -253,20 +336,61 @@
                         <div class="action-arrow">→</div>
                     </button>
                 </div>
-
-                <!-- Alerts -->
-                <div class="section-subtitle">
-                    <h2>System Alerts</h2>
-                    <p>Real-time system notifications</p>
-                </div>
-                <div class="alerts-section glass-card">
-                    <div id="alertsList" class="alerts-list">
-                        <div class="alert-placeholder">
-                            <span>🔔</span>
-                            <p>No alerts at this time</p>
+                <!-- FAQ Section (Integrated) -->
+                <div class="dashboard-faq-wrapper" style="margin-top: 4rem;">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="title-icon">🤔</span>
+                            Frequently Asked Questions
+                        </h2>
+                    </div>
+                    <div class="faq-container">
+                        <div class="faq-item glass-card">
+                            <div class="faq-question">
+                                <span>What exactly is AutoSense X?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>AutoSense X is an AI-driven system optimization suite designed to monitor, protect,
+                                    and enhance your Windows experience. It uses advanced telemetry to predict hardware
+                                    failures and optimize resource allocation.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item glass-card">
+                            <div class="faq-question">
+                                <span>How does the AI Health Prediction work?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Our neural engine analyzes thousands of system data points—including CPU voltage
+                                    ripples, memory latency spikes, and disk SMART data—to predict potential hardware
+                                    issues before they happen.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item glass-card">
+                            <div class="faq-question">
+                                <span>What is the Disk Map Explorer?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>It's a high-performance visualizer that maps your storage usage using D3.js treemaps.
+                                    It allows you to instantly identify "storage hogs" and optimize your disk space with
+                                    a cyber-aesthetic interface.</p>
+                            </div>
+                        </div>
+                        <div class="faq-item glass-card">
+                            <div class="faq-question">
+                                <span>Is it safe to use the optimization tools?</span>
+                                <span class="faq-toggle">+</span>
+                            </div>
+                            <div class="faq-answer">
+                                <p>Yes. All optimization actions—including Health Saver and Junk Cleaning—are
+                                    non-destructive and follow official Windows performance guidelines to ensure system
+                                    stability.</p>
+                            </div>
                         </div>
                     </div>
-                </div>
+
             </section>
 
             <!-- AI Brain Section -->
@@ -328,6 +452,7 @@
                         <span>Generate PDF Report</span>
                     </button>
                 </div>
+
             </section>
 
             <!-- Disk Map Section -->
@@ -360,9 +485,32 @@
                 </div>
 
                 <div class="disk-map-container glass-card">
-                    <div class="disk-map-header">
-                        <div class="disk-info" id="diskInfo">
-                            <span>Select a drive and click "Load Disk Map"</span>
+                    <div class="storage-dashboard glass-card" id="storageHeader">
+                        <div class="storage-main">
+                            <div class="drive-badge">
+                                <span id="activeDrive">C:</span>
+                                <div class="pulse-dot"></div>
+                            </div>
+                            <div class="storage-progress-container">
+                                <div class="storage-bar-wrapper">
+                                    <div id="storageProgressBar" class="storage-bar-fill"></div>
+                                    <div class="storage-bar-glow"></div>
+                                </div>
+                                <div class="storage-labels">
+                                    <span id="storageUsedText">0 GB Used</span>
+                                    <span id="storageTotalText">0 GB Total</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="storage-stats">
+                            <div class="s-stat">
+                                <span class="s-label">FREE SPACE</span>
+                                <span class="s-value" id="storageFreeText">0 GB</span>
+                            </div>
+                            <div class="s-stat">
+                                <span class="s-label">HEALTH</span>
+                                <span class="s-value neon-text">OPTIMAL</span>
+                            </div>
                         </div>
                     </div>
                     <div id="treemapContainer" class="treemap-wrapper">
@@ -488,7 +636,41 @@
                 </div>
             </section>
         </main>
+
+        <!-- Footer (Restricted to Dashboard via JS) -->
+        <footer class="footer-cyber" id="mainFooter">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="logo.jpg" alt="Logo" class="footer-logo">
+                    <div class="brand-text">
+                        <h3>AutoSense X</h3>
+                        <p>The Future of System Intelligence</p>
+                    </div>
+                </div>
+                <div class="footer-links">
+                    <div class="link-group">
+                        <h4>Navigate</h4>
+                        <a href="#dashboard">Dashboard</a>
+                        <a href="#disk-map">Disk Map</a>
+                        <a href="#security">Security</a>
+                    </div>
+                    <div class="link-group">
+                        <h4>Resources</h4>
+                        <a href="#">Support</a>
+                        <a href="#">Privacy</a>
+                        <a href="#">Github</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 AutoSense X. Built with Cybernetic Passion.</p>
+            </div>
+        </footer>
     </div>
+
+
+    <!-- Persistent Treemap Tooltip -->
+    <div id="treemapTooltip" class="treemap-tooltip" style="display: none;"></div>
 
     <script src="app.js"></script>
 </body>

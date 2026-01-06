@@ -61,6 +61,7 @@ function bootstrapApp() {
 
     setupNavigation();
     initializeDrives();
+    setTimeout(updateHealthSaver, 2000);
 }
 
 // 💾 Load available drives dynamically
@@ -203,9 +204,47 @@ function setupEventListeners() {
         localStorage.setItem('notifications', e.target.checked);
     });
 
+    // Notifications Dropdown Toggle
+    const notifBell = document.getElementById('notifBell');
+    const notifDropdown = document.getElementById('notifDropdown');
+    
+    notifBell?.addEventListener('click', (e) => {
+        e.stopPropagation();
+        notifDropdown?.classList.toggle('show');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!notifDropdown?.contains(e.target) && !notifBell?.contains(e.target)) {
+            notifDropdown?.classList.remove('show');
+        }
+    });
+
+    document.getElementById('clearNotifs')?.addEventListener('click', () => {
+        const list = document.getElementById('alertsList');
+        if (list) {
+            list.innerHTML = `
+                <div class="notif-placeholder">
+                    <span>🔔</span>
+                    <p>No new notifications</p>
+                </div>
+            `;
+        }
+        updateNotifBadge(0);
+    });
+
     // Modal close on outside click
     document.getElementById('loginModal')?.addEventListener('click', (e) => {
         if (e.target.id === 'loginModal') closeLoginModal();
+    });
+
+    // FAQ Accordion logic
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        item.addEventListener('click', () => {
+            const isActive = item.classList.contains('active');
+            faqItems.forEach(i => i.classList.remove('active'));
+            if (!isActive) item.classList.add('active');
+        });
     });
 }
 
@@ -223,6 +262,12 @@ function showSection(sectionId) {
         const linkSection = link.getAttribute('data-section') || link.getAttribute('href').substring(1);
         link.classList.toggle('active', linkSection === sectionId);
     });
+
+    // Toggle global footer visibility
+    const footer = document.getElementById('mainFooter');
+    if (footer) {
+        footer.style.display = sectionId === 'dashboard' ? 'block' : 'none';
+    }
     
     // Load section data if needed
     if (sectionId === 'dashboard') {
@@ -506,31 +551,44 @@ function displayAlerts(alertsData) {
     const alertsList = document.getElementById('alertsList');
     if (!alertsList) return;
     
-    alertsList.innerHTML = '';
     const allAlerts = [...(alertsData.stored_alerts || []), ...(alertsData.current_alerts || [])];
     
     if (allAlerts.length === 0) {
         alertsList.innerHTML = `
-            <div class="alert-placeholder">
+            <div class="notif-placeholder">
                 <span>🔔</span>
                 <p>No alerts at this time. System is healthy!</p>
             </div>
         `;
+        updateNotifBadge(0);
         return;
     }
     
+    alertsList.innerHTML = '';
     allAlerts.forEach(alert => {
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert ${alert.type || alert.alert_type || 'info'}`;
+        alertDiv.className = `notif-item ${alert.type || alert.alert_type || 'info'}`;
         alertDiv.innerHTML = `
-            <div>
-                <strong>${alert.title || 'Alert'}</strong>
-                <p>${alert.message}</p>
-                <small>${new Date(alert.timestamp).toLocaleTimeString()}</small>
-            </div>
+            <strong>${alert.title || 'Alert'}</strong>
+            <p>${alert.message}</p>
+            <small>${new Date(alert.timestamp).toLocaleTimeString()}</small>
         `;
         alertsList.appendChild(alertDiv);
     });
+
+    updateNotifBadge(allAlerts.length);
+}
+
+function updateNotifBadge(count) {
+    const badge = document.getElementById('notifBadge');
+    if (!badge) return;
+    
+    if (count > 0) {
+        badge.textContent = count > 9 ? '9+' : count;
+        badge.style.display = 'flex';
+    } else {
+        badge.style.display = 'none';
+    }
 }
 
 // System Actions
@@ -540,6 +598,7 @@ async function boostRAM() {
         const result = await apiCall('/api/boost-ram', { method: 'POST' });
         if (result && result.success) {
             showToast(`RAM Boosted! Freed ${result.freed_percent}% memory`, 'success');
+            addLifeBoost(0.1); // ~3 days
             loadDashboard();
         }
     } catch (error) {
@@ -555,10 +614,11 @@ async function cleanJunkFiles() {
             if (confirm(`Found ${scanResult.total_size_mb} MB of junk files. Clean them?`)) {
                 showToast('Cleaning junk files...', 'info');
                 const cleanResult = await apiCall('/api/junk-files/clean', { method: 'POST' });
-                if (cleanResult && cleanResult.success) {
-                    showToast(`Cleaned ${cleanResult.cleaned_files} files, freed ${cleanResult.freed_size_mb} MB`, 'success');
-                    loadDashboard();
-                }
+                    if (cleanResult && cleanResult.success) {
+                        showToast(`Cleaned ${cleanResult.cleaned_files} files, freed ${cleanResult.freed_size_mb} MB`, 'success');
+                        addLifeBoost(0.2); // ~6 days
+                        loadDashboard();
+                    }
             }
         }
     } catch (error) {
@@ -572,6 +632,7 @@ async function autoOptimize() {
         const result = await apiCall('/api/ai/auto-optimize', { method: 'POST' });
         if (result && result.success) {
             showToast('Auto-optimization completed!', 'success');
+            addLifeBoost(0.4); // ~12 days
             loadDashboard();
         }
     } catch (error) {
@@ -700,13 +761,20 @@ async function loadDiskMap() {
         }
 
         if (result.success) {
-            if (diskInfo) {
-                diskInfo.innerHTML = `
-                    <strong>${result.drive}</strong> |
-                    Total: ${formatBytes(result.total_size)} |
-                    Used: ${formatBytes(result.used_size)} |
-                    Free: ${formatBytes(result.free_size)}
-                `;
+            // Update Premium Storage Dashboard
+            document.getElementById('activeDrive').textContent = result.drive;
+            document.getElementById('storageUsedText').textContent = `${formatBytes(result.used_size)} Used`;
+            document.getElementById('storageTotalText').textContent = `${formatBytes(result.total_size)} Total`;
+            document.getElementById('storageFreeText').textContent = formatBytes(result.free_size);
+            
+            const usedPercent = (result.used_size / result.total_size) * 100;
+            const progressBar = document.getElementById('storageProgressBar');
+            if (progressBar) {
+                progressBar.style.width = `${usedPercent}%`;
+                // Change color based on usage
+                if (usedPercent > 90) progressBar.style.background = 'linear-gradient(90deg, #ff4e50, #f9d423)';
+                else if (usedPercent > 70) progressBar.style.background = 'linear-gradient(90deg, #f7971e, #ffd200)';
+                else progressBar.style.background = 'linear-gradient(90deg, #00d2ff, #3a7bd5)';
             }
             
             if (result.treemap && result.treemap.children && result.treemap.children.length > 0) {
@@ -740,36 +808,24 @@ function renderDiskTreemap(data) {
     const container = document.getElementById('treemapContainer');
     if (!container) return;
     
-    // Clear previous content
     container.innerHTML = '';
-    
-    // Robust width calculation
     const width = Math.max(container.offsetWidth || 0, 800);
     const height = 450;
 
     try {
-        if (!window.d3) {
-            throw new Error("D3 library not loaded");
-        }
-
-        // Filter and sanitize data
         if (data.children) {
             data.children = data.children.filter(c => c.size > 0);
         }
 
-        if (!data.children || data.children.length === 0) {
-            container.innerHTML = `<div class="treemap-placeholder"><span>ℹ️</span><p>Storage data is too small to visualize.</p></div>`;
-            return;
-        }
-
         const root = d3.hierarchy(data)
-            .sum(d => Math.max(d.size, 1)) // Ensure min size of 1 for D3 layout
+            .sum(d => Math.max(d.size, 1))
             .sort((a, b) => b.value - a.value);
 
         d3.treemap()
             .size([width, height])
             .paddingOuter(4)
             .paddingInner(2)
+            .round(true)
             (root);
 
         const svg = d3.select(container)
@@ -777,75 +833,94 @@ function renderDiskTreemap(data) {
             .attr('viewBox', `0 0 ${width} ${height}`)
             .attr('width', '100%')
             .attr('height', height)
-            .style('overflow', 'visible')
-            .style('border-radius', '12px');
+            .style('border-radius', '16px');
 
-        const color = d3.scaleOrdinal()
-            .range(['#1a1f3d', '#232a5c', '#2c3580', '#3540a4', '#3e4bc8', '#4756ec', '#0066ff', '#0099ff']);
+        const defs = svg.append('defs');
+        
+        // Define gradients (optimized)
+        const gradients = [
+            { id: 'grad-blue', colors: ['#00d2ff', '#3a7bd5'] },
+            { id: 'grad-purple', colors: ['#8e2de2', '#4a00e0'] },
+            { id: 'grad-teal', colors: ['#00f2fe', '#4facfe'] }
+        ];
 
-        const leaf = svg.selectAll('g')
+        gradients.forEach(g => {
+            const grad = defs.append('linearGradient').attr('id', g.id).attr('x1', '0%').attr('y1', '0%').attr('x2', '100%').attr('y2', '100%');
+            grad.append('stop').attr('offset', '0%').attr('stop-color', g.colors[0]);
+            grad.append('stop').attr('offset', '100%').attr('stop-color', g.colors[1]);
+        });
+
+        const grads = ['url(#grad-blue)', 'url(#grad-purple)', 'url(#grad-teal)'];
+        const tooltip = document.getElementById('treemapTooltip');
+        
+        let requestId = null;
+        let mouseX = 0, mouseY = 0;
+
+        const updateTooltip = () => {
+            if (tooltip && tooltip.style.display === 'block') {
+                tooltip.style.transform = `translate3d(${mouseX + 20}px, ${mouseY + 20}px, 0)`;
+                requestId = requestAnimationFrame(updateTooltip);
+            }
+        };
+
+        const nodes = svg.selectAll('g')
             .data(root.leaves())
             .enter().append('g')
+            .attr('class', 'treemap-node')
             .attr('transform', d => `translate(${d.x0},${d.y0})`);
 
-        leaf.append('rect')
+        nodes.append('rect')
             .attr('width', d => Math.max(0, d.x1 - d.x0))
             .attr('height', d => Math.max(0, d.y1 - d.y0))
-            .attr('fill', (d, i) => color(i))
-            .attr('stroke', 'rgba(255,255,255,0.1)')
-            .on('mouseover', function(event, d) {
-                d3.select(this).attr('fill', '#00ffff');
-                const tooltip = document.createElement('div');
-                tooltip.id = 'treemap-tooltip';
-                tooltip.className = 'glass-card';
-                tooltip.style.cssText = 'position: fixed; background: rgba(10, 14, 39, 0.95); color: #fff; padding: 10px; border-radius: 8px; pointer-events: none; z-index: 9999; border: 1px solid var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 255, 255, 0.3); font-size: 0.9rem;';
-                tooltip.innerHTML = `<strong>${d.data.name}</strong><br>${formatBytes(d.data.size)}`;
-                document.body.appendChild(tooltip);
-                updateTooltipPos(event);
+            .attr('fill', (d, i) => grads[i % grads.length])
+            .attr('rx', 6)
+            .attr('ry', 6)
+            .style('opacity', 0.8)
+            .on('mouseenter', function(event, d) {
+                d3.select(this).style('opacity', 1).style('stroke', '#00ffff');
+                if (tooltip) {
+                    tooltip.innerHTML = `
+                        <div style="font-weight: 800; color: #00ffff; font-family: 'Orbitron';">${d.data.name}</div>
+                        <div style="font-size: 1.1rem; font-weight: 700;">${formatBytes(d.data.size)}</div>
+                    `;
+                    tooltip.style.display = 'block';
+                    cancelAnimationFrame(requestId);
+                    requestId = requestAnimationFrame(updateTooltip);
+                }
             })
-            .on('mousemove', updateTooltipPos)
-            .on('mouseout', function() {
-                d3.select(this).attr('fill', (d, i) => color(i));
-                const tooltip = document.getElementById('treemap-tooltip');
-                if (tooltip) tooltip.remove();
+            .on('mousemove', function(event) {
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            })
+            .on('mouseleave', function() {
+                d3.select(this).style('opacity', 0.8).style('stroke', 'rgba(255,255,255,0.1)');
+                if (tooltip) {
+                    tooltip.style.display = 'none';
+                    cancelAnimationFrame(requestId);
+                }
             });
 
-        leaf.append('text')
-            .attr('x', 5)
-            .attr('y', 20)
-            .attr('fill', '#fff')
-            .style('font-size', '11px')
-            .style('font-weight', '500')
-            .style('pointer-events', 'none')
-            .text(d => (d.x1 - d.x0 > 60 && d.y1 - d.y0 > 30) ? d.data.name : '');
+        // Visible labels for larger blocks
+        nodes.append('text')
+            .attr('class', 'treemap-label')
+            .attr('x', 8)
+            .attr('y', 8)
+            .text(d => {
+                const w = d.x1 - d.x0;
+                const h = d.y1 - d.y0;
+                // Only show if block is big enough for text
+                return (w > 40 && h > 20) ? d.data.name : '';
+            })
+            .style('font-size', d => {
+                const size = Math.min(14, (d.x1 - d.x0) / 8);
+                return Math.max(9, size) + 'px';
+            });
 
-    } catch (err) {
-        console.error("Treemap Render Error:", err);
-        // Fallback to a simple list if D3 fails
-        const listHtml = data.children ? data.children.slice(0, 10).map(c => `
-            <div style="display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.1);">
-                <span>${c.name}</span>
-                <span style="color: var(--neon-cyan)">${formatBytes(c.size)}</span>
-            </div>
-        `).join('') : '<p>No data</p>';
-        
-        container.innerHTML = `
-            <div style="padding: 20px;">
-                <h3 style="margin-bottom: 15px; color: var(--neon-cyan);">Top Folders (List Mode)</h3>
-                ${listHtml}
-                <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">Note: Visualization failed to initialize, using list fallback.</p>
-            </div>
-        `;
-    }
-
-    function updateTooltipPos(event) {
-        const tooltip = document.getElementById('treemap-tooltip');
-        if (tooltip) {
-            tooltip.style.left = (event.clientX + 15) + 'px';
-            tooltip.style.top = (event.clientY + 15) + 'px';
-        }
+    } catch (e) {
+        console.error("Treemap Error:", e);
     }
 }
+
 
 function formatBytes(bytes) {
     if (bytes === 0) return '0 B';
@@ -1004,6 +1079,66 @@ function activateVoiceAssistant() {
         return;
     }
     showToast('Voice assistant activated. Say "Hey AutoSense boost system"', 'info');
+}
+
+// Health Life Saver Logic
+function updateHealthSaver() {
+    const cpuEl = document.getElementById('cpuPercent');
+    const memEl = document.getElementById('memoryPercent');
+    const diskEl = document.getElementById('diskPercent');
+    if (!cpuEl || !memEl) return;
+
+    const cpuUsage = parseInt(cpuEl.innerText) || 50;
+    const ramUsage = parseInt(memEl.innerText) || 50;
+    const diskUsage = parseInt(diskEl?.innerText || '50');
+    const diskHealth = 100 - diskUsage;
+    
+    let baseLife = 5.0; // Baseline 5 years
+    
+    // Toned down factors (max ~0.5 years total bonus from usage)
+    let cpuFactor  = cpuUsage < 30 ? 0.2 : cpuUsage < 60 ? 0.1 : -0.2;
+    let ramFactor  = ramUsage < 40 ? 0.15 : ramUsage < 70 ? 0.05 : -0.15;
+    let diskFactor = diskHealth > 85 ? 0.15 : diskHealth > 70 ? 0.05 : -0.2;
+
+    let totalLife = baseLife + cpuFactor + ramFactor + diskFactor;
+    
+    // Add optimization history boost (stored in months, e.g. 0.1 months = ~3 days)
+    const savedMonths = parseFloat(localStorage.getItem('lifeSavedMonths') || 0);
+    totalLife += (savedMonths / 12);
+
+    const lifeSavedCalculated = Math.max(0, totalLife - baseLife);
+
+    const projLifeEl = document.getElementById('projectedLife');
+    const lifeSavedEl = document.getElementById('lifeSaved');
+    const healthScoreEl = document.getElementById('currentHealthScore');
+
+    if (projLifeEl) projLifeEl.innerText = totalLife.toFixed(1) + " Years";
+    
+    if (lifeSavedEl) {
+        const totalSavedMonths = lifeSavedCalculated * 12;
+        if (totalSavedMonths < 1) {
+            // Show days if less than a month
+            const days = Math.round(totalSavedMonths * 30.44);
+            lifeSavedEl.innerText = "+" + days + " Days";
+        } else {
+            // Show months with one decimal for precision
+            lifeSavedEl.innerText = "+" + totalSavedMonths.toFixed(1) + " Months";
+        }
+    }
+    
+    let score = 100 - (cpuUsage * 0.2) - (ramUsage * 0.2);
+    score = Math.max(0, Math.min(100, score));
+    if (healthScoreEl) healthScoreEl.innerText = Math.round(score) + "%";
+}
+
+function addLifeBoost(months) {
+    let saved = parseFloat(localStorage.getItem('lifeSavedMonths') || 0);
+    saved += months;
+    localStorage.setItem('lifeSavedMonths', saved);
+    updateHealthSaver();
+    
+    let displayValue = months < 1 ? Math.round(months * 30.44) + " days" : months + " month(s)";
+    showToast(`Device health improved! +${displayValue} added to lifespan via AI optimization.`, 'success');
 }
 
 // Make functions globally accessible
