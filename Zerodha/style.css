@@ -1,0 +1,29 @@
+.navbar{
+  display: flex;
+  justify-content: space-around;
+}
+
+.hero1{
+  display: flex;
+}
+
+.trust{
+  height: 400px;
+  width: 250px;
+  display: contents;
+  margin-right: 50px;
+}
+
+.unbeatablepricing{
+  display: flex;
+}
+
+.education{
+  display: flex;
+  gap: 300px;
+}
+
+.footer-container{
+  display: flex;
+  flex-wrap: wrap;
+}

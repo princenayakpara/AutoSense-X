@@ -4,410 +4,61 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Products</title>
-  <style>
-    /* ------------------------------
-   Zerodha Clone - Products Page
-   Author: Prince Patel
---------------------------------*/
-
-:root {
-  --primary-color: #387ed1;
-  --text-dark: #222;
-  --text-light: #666;
-  --bg-light: #fff;
-  --bg-grey: #f8f9fa;
-  --border-color: #ddd;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Inter", Arial, sans-serif;
-}
-
-body {
-  background-color: var(--bg-light);
-  color: var(--text-dark);
-  line-height: 1.6;
-}
-
-/* Header Section */
-body > div:first-child {
-  text-align: center;
-  padding: 80px 20px 40px;
-  background: var(--bg-grey);
-}
-
-body > div:first-child h1 {
-  font-size: 2.3rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-body > div:first-child h2 {
-  color: var(--text-light);
-  font-weight: 400;
-  margin-bottom: 20px;
-}
-
-body > div:first-child h3 {
-  color: var(--primary-color);
-  font-weight: 500;
-  cursor: pointer;
-}
-
-hr {
-  width: 90%;
-  margin: 30px auto;
-  border: 0.5px solid var(--border-color);
-}
-
-/* Product Sections */
-body > div:nth-child(n+3):nth-child(-n+8) {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 50px;
-  padding: 60px 40px;
-  border-bottom: 1px solid var(--border-color);
-}
-
-body > div:nth-child(n+3):nth-child(-n+8) img {
-  width: 100%;
-  max-width: 450px;
-}
-
-body > div:nth-child(n+3):nth-child(-n+8) h2 {
-  font-size: 1.8rem;
-  margin-bottom: 15px;
-}
-
-body > div:nth-child(n+3):nth-child(-n+8) h3 {
-  font-size: 1rem;
-  color: var(--text-light);
-  margin-bottom: 20px;
-}
-
-body > div:nth-child(n+3):nth-child(-n+8) a {
-  text-decoration: none;
-  color: var(--primary-color);
-  margin-right: 20px;
-  font-weight: 500;
-  transition: color 0.3s;
-}
-
-body > div:nth-child(n+3):nth-child(-n+8) a:hover {
-  color: #2f6cb4;
-}
-
-/* App Store Badges */
-body > div:nth-child(n+3):nth-child(-n+8) img[alt*="Badge"] {
-  width: 130px;
-  margin-top: 15px;
-  margin-right: 10px;
-}
-
-/* Technology Stack */
-body > div:nth-child(9) {
-  text-align: center;
-  padding: 80px 30px;
-  background: var(--bg-grey);
-}
-
-body > div:nth-child(9) h2 {
-  font-weight: 400;
-  color: var(--text-light);
-  font-size: 1.2rem;
-}
-
-/* Zerodha Universe Section */
-body > div:nth-child(10) {
-  text-align: center;
-  padding: 100px 20px 60px;
-}
-
-body > div:nth-child(10) h1 {
-  font-size: 2.2rem;
-  margin-bottom: 10px;
-}
-
-body > div:nth-child(10) h3 {
-  font-weight: 400;
-  color: var(--text-light);
-  margin-bottom: 60px;
-}
-
-/* Partner Cards */
-body > div:nth-child(10) > div {
-  display: inline-block;
-  width: 280px;
-  vertical-align: top;
-  margin: 20px;
-  background: var(--bg-grey);
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-body > div:nth-child(10) > div:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
-}
-
-body > div:nth-child(10) > div img {
-  width: 100%;
-  max-width: 160px;
-  margin-bottom: 15px;
-}
-
-body > div:nth-child(10) > div h4 {
-  font-weight: 400;
-  color: var(--text-light);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-/* Sign Up Button */
-body > div:nth-child(10) > div:last-child a {
-  display: inline-block;
-  background: var(--primary-color);
-  color: white;
-  font-weight: 500;
-  text-decoration: none;
-  padding: 12px 30px;
-  border-radius: 5px;
-  margin-top: 40px;
-  transition: background 0.3s;
-}
-
-body > div:nth-child(10) > div:last-child a:hover {
-  background: #2f6cb4;
-}
-
-/* Responsive Layout */
-@media (max-width: 768px) {
-  body > div:nth-child(n+3):nth-child(-n+8) {
-    flex-direction: column;
-    text-align: center;
-    padding: 40px 20px;
-  }
-
-  body > div:nth-child(10) > div {
-    width: 85%;
-  }
-
-  body > div:first-child h1 {
-    font-size: 1.9rem;
-  }
-
-  
-}
-
-.navbar {
-  background: var(--bg-light);
-  border-bottom: 1px solid var(--border-color);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
-
-.navbar .container {
-  width: 90%;
-  margin: auto;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 0;
-}
-
-.nav-links {
-  display: flex;
-  list-style: none;
-  gap: 25px;
-}
-
-.nav-links a {
-  text-decoration: none;
-  color: var(--text-dark);
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.nav-links a:hover {
-  color: var(--primary-color);
-}
-
-
-  </style>
 </head>
 <body>
-  <header class="navbar">
-    <div class="container">
-      <img src="https://zerodha.com/static/images/logo.svg" style="width: 100px; height: 30px;" alt="Zerodha Logo" class="logo">
-      <nav>
-        <ul class="nav-links">
-          <li><a href="index.html">Signup</a></li>
-          <li><a href="about.html">About</a></li>
-          <li><a href="products.html">Products</a></li>
-          <li><a href="pricing.html">Pricing</a></li>
-          <li><a href="support.html">Support</a></li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-  <div>
-    <h1>Zerodha Products</h1>
-    <h2>Sleek, modern, and intuitive trading platforms</h2>
-    <h3>Check out our investment offerings →</h3>
-  </div>
-  <hr>
-  <div>
+   <div>
+  <div class="navbar">
     <div>
-      <img src="https://zerodha.com/static/images/products-kite.png" alt="Kite">
+      <img src="https://zerodha.com/static/images/logo.svg" style="width: 90px; height: 20px;">
     </div>
     <div>
-      <h2>Kite</h2>
-      <h3>Our ultra-fast flagship trading platform with <br>
-        streaming market data, advanced charts, an <br>
-        elegant UI, and more. Enjoy the Kite <br>
-        experience seamlessly on your Android and <br>
-        iOS devices.
-      </h3>
-      <a href="">Try demo</a>
-      <a href="">Learn more</a>
-      <img src="https://zerodha.com/static/images/google-play-badge.svg" alt="Google Play Badge">
-      <img src="https://zerodha.com/static/images/appstore-badge.svg" alt="App Store Badge">
-    </div>
-  </div>
-
-  <div>
-    <div>
-      <h2>Console</h2>
-      <h3>
-        The central dashboard for your Zerodha <br>
-        account. Gain insights into your trades and <br>
-        investments with in-depth reports and <br>
-        visualisations.
-      </h3>
-      <a href="">Learn more</a>
+      Signup
     </div>
     <div>
-      <img src="https://zerodha.com/static/images/products-console.png" alt="console">
-    </div>
-  </div>
-  <div>
-    <div>
-      <img src="https://zerodha.com/static/images/products-coin.png" alt="Coin">
+      About
     </div>
     <div>
-      <h2>Coin</h2>
-      <h3>Buy direct mutual funds online, commission- <br>
-          free, delivered directly to your Demat <br>
-          account. Enjoy the investment experience <br>
-          on your Android and iOS devices.
-      </h3>
-      <a href="">Coin</a>
-      <img src="https://zerodha.com/static/images/google-play-badge.svg" alt="Google Play Badge">
-      <img src="https://zerodha.com/static/images/appstore-badge.svg" alt="App Store Badge">
+      Products
     </div>
-  </div>
-
-  <div>
     <div>
-      <h2>Kite Connect API</h2>
-      <h3>
-        Build powerful trading platforms and <br>
-        experiences with our super simple <br>
-        HTTP/JSON APIs. If you are a startup, build <br>
-        your investment app and showcase it to our <br>
-        clientbase.
-      </h3>
-      <a href="">Kite Connect</a>
+      Pricing
+    </div>
+    <div>
+      Support
+    </div>
+    <div>
 
     </div>
-    <div>
-      <img src="https://zerodha.com/static/images/kite-trade/landing.svg" alt="Kite Connect API">
-    </div>
-  </div>
 
-  <div>
     <div>
-      <img src="https://zerodha.com/static/images/varsity-products.png" alt="Varsity">
+      <h1>Zerodha Products</h1>
+      <h2>Sleek, modern and intuitive trading platforms</h2>
+      <h3>Check out our <span class="blue">Investment offerings</span></h3>
     </div>
-    <div>
-      <h2>Varsity mobile</h2>
-      <h3>
-        An easy to grasp, collection of stock market <br>
-        lessons with in-depth coverage and <br>
-        illustrations. Content is broken down into <br>
-        bite-size cards to help you learn on the go.
-      </h3>
-      <img src="https://zerodha.com/static/images/google-play-badge.svg" alt="Google Play Badge">
-      <img src="https://zerodha.com/static/images/appstore-badge.svg" alt="App Store Badge">
-    </div>
-  </div>
 
-  <div>
-    <h2>Want to know more about our technology stack? Check out the Zerodha.tech blog.</h2>
-  </div>
-
-  <div>
-    <h1>The Zerodha Universe</h1>
-    <h3>Extend your trading and investment experience even further with our partner platforms</h3>
     <div>
-      <img src="https://zerodha.com/static/images/partners/zerodhafundhouse.png" alt="Zerodha Fund House">
-      <h4>
-        Our asset management venture <br>
-        that is creating simple and transparent index <br>
-        funds to help you save for your goals.
-      </h4>
+      <div>
+        <img src="https://zerodha.com/static/images/products-kite.png">
+      </div>
+      <div>
+        <h2>Kite</h2>
+        <h3>
+          Our ultra-fast flagship trading platform with <br>
+          streaming market data, advanced charts, an <br>
+          elegant UI, and more. Enjoy the Kite <br>
+          experience seamlessly on your Android and <br>
+          iOS devices.
+        </h3>
+        <span class="blue">Try demo </span>
+        <span class="blue">Learn more </span>
+        <div>
+          <img src="https://zerodha.com/static/images/google-play-badge.svg">
+        </div>
+        <div>
+          <img src="https://zerodha.com/static/images/appstore-badge.svg">
+        </div>
+      </div>
     </div>
-    <div>
-      <img src="https://zerodha.com/static/images/products/sensibull-logo.svg" alt="Sensibull">
-      <h4>
-        Options trading platform that lets you <br>
-        create strategies, analyze positions, and examine <br>
-        data points like open interest, FII/DII, and more.
-      </h4>
     </div>
-    <div>
-      <img src="https://zerodha.com/static/images/partners/tijori.svg" alt="Tijori">
-      <h4>
-        Investment research platform <br>
-        that offers detailed insights on stocks, <br>
-        sectors, supply chains, and more.
-      </h4>
-    </div>
-    <div>
-      <img src="https://zerodha.com/static/images/products/streak-logo.png" alt="Streak">
-      <h4>
-        Systematic trading platform <br>
-        that allows you to create and backtest <br>
-        strategies without coding.
-      </h4>
-    </div>
-    <div>
-      <img src="https://zerodha.com/static/images/products/smallcase-logo.png" alt="Smallcase">
-      <h4>
-        Thematic investing platform <br>
-        that helps you invest in diversified <br>
-        baskets of stocks on ETFs.
-      </h4>
-    </div>
-    <div>
-      <img src="https://zerodha.com/static/images/products/ditto-logo.png" alt="Ditto">
-      <h4>
-        Personalized advice on life <br>
-        and health insaurance. No spam <br>
-        and no mis-selling.
-      </h4>
-    </div>
-    <div>
-      <a href="signup.html">Sign up for free</a>
-    </div>
-  </div>
 </body>
 </html>
