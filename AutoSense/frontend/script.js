@@ -21,8 +21,8 @@ const chart = new Chart(ctx,{
 });
 
 async function loadStats(){
-  const stats = await fetch("/stats").then(r=>r.json());
-  const health = await fetch("/health").then(r=>r.json());
+  const stats = await fetch("https://autosense-x.onrender.com/stats").then(r=>r.json());
+  const health = await fetch("https://autosense-x.onrender.com/health").then(r=>r.json());
 
   document.getElementById("cpu").innerText = stats.cpu + "%";
   document.getElementById("ram").innerText = stats.ram + "%";
